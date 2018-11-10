@@ -11,7 +11,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="insert-your-api-key-here" />
+            android:value="AIzaSyDjU3oJ6UAivx2ZxmicDwl13VmiYPCVsAs" />
 
         <activity android:name="com.example.android.shushme.MainActivity">
             <intent-filter>

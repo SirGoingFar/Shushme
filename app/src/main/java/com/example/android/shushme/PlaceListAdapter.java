@@ -17,15 +17,20 @@ package com.example.android.shushme;
 */
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+
 public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.PlaceViewHolder> {
 
     private Context mContext;
+    private PlaceBuffer mData;
 
     /**
      * Constructor using the context and the db cursor
@@ -59,7 +64,15 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
      */
     @Override
     public void onBindViewHolder(PlaceViewHolder holder, int position) {
+        Place currentPlace = holder.getCurrentPlace();
 
+        holder.nameTextView.setText(currentPlace.getName().toString());
+        holder.addressTextView.setText(currentPlace.getAddress().toString());
+    }
+
+    public void swapDataSource(@NonNull PlaceBuffer placeBuffer) {
+        this.mData = placeBuffer;
+        notifyDataSetChanged();
     }
 
 
@@ -70,7 +83,8 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
      */
     @Override
     public int getItemCount() {
-        return 0;
+        if (mData == null) return 0;
+        else return mData.getCount();
     }
 
     /**
@@ -85,6 +99,10 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
             super(itemView);
             nameTextView = (TextView) itemView.findViewById(R.id.name_text_view);
             addressTextView = (TextView) itemView.findViewById(R.id.address_text_view);
+        }
+
+        Place getCurrentPlace() {
+            return mData.get(getAdapterPosition());
         }
 
     }
