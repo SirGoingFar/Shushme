@@ -255,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onResult(@NonNull PlaceBuffer places) {
                         mAdapter.swapDataSource(places);
+                        geofencing.updateGeoFenceList(places);
                     }
                 });
 

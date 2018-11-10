@@ -94,7 +94,7 @@ public class GeoFencing implements ResultCallback<Status> {
         }
     }
 
-    private void updateGeoFenceList(PlaceBuffer placeBuffer) {
+    public void updateGeoFenceList(PlaceBuffer placeBuffer) {
 
         for (Place place : placeBuffer) {
             //A Daily Job Scheduler is needed to daily register the Geofences because they expire in 24hours
