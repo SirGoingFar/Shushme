@@ -193,17 +193,24 @@ public class MainActivity extends AppCompatActivity implements
             locationPermissions.setEnabled(false);
         }
 
-        //Initialize the Ring Permission
+        //Initialize the Ringer Permission
         CheckBox ringPermission = (CheckBox) findViewById(R.id.ringer_permissions_checkbox);
         NotificationManager notifManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.N && !notifManager.isNotificationPolicyAccessGranted()) ||
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notifManager.isNotificationPolicyAccessGranted())) {
+            ringPermission.setChecked(true);
+        } else {
             ringPermission.setChecked(true);
             ringPermission.setEnabled(false);
-        } else {
-            ringPermission.setChecked(false);
-            ringPermission.setEnabled(true);
         }
+
+        ringPermission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
