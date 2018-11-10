@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements
         OnConnectionFailedListener {
 
     // Constants
-    public static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 111;
     private static final int PLACE_PICKER_REQUEST = 0;
 
