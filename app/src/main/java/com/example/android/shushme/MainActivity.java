@@ -16,10 +16,12 @@ package com.example.android.shushme;
 * limitations under the License.
 */
 
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +32,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.android.shushme.provider.PlaceContract;
@@ -79,6 +82,11 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new PlaceListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+
+        //Set up Geo-fences
+        Switch onOffSwitch = (Switch) findViewById(R.id.enable_switch);
+        prefs = getSharedPreferences("ksdss", MODE_PRIVATE);
+        isGeofenceEnable = .
 
 
         // Build up the LocationServices API client
@@ -163,6 +171,18 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             locationPermissions.setChecked(true);
             locationPermissions.setEnabled(false);
+        }
+
+        //Initialize the Ring Permission
+        CheckBox ringPermission = (CheckBox) findViewById(R.id.ringer_permissions_checkbox);
+        NotificationManager notifManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.N && !notifManager.isNotificationPolicyAccessGranted()) ||
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            ringPermission.setChecked(true);
+            ringPermission.setEnabled(false);
+        } else {
+            ringPermission.setChecked(false);
+            ringPermission.setEnabled(true);
         }
     }
 
