@@ -19,10 +19,12 @@ package com.example.android.shushme;
 import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -32,6 +34,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -60,12 +63,15 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 111;
     private static final int PLACE_PICKER_REQUEST = 0;
+    private static final String PREF_GEO_FENCE_ENABLED = "pref_geo_fence_enabled";
+    private static final String GENERAL_PREF = "general_pref";
 
     // Member variables
     private PlaceListAdapter mAdapter;
-    private RecyclerView mRecyclerView;
     private GoogleApiClient mClient;
-    private List<String> allPlacesId;
+    private SharedPreferences prefs;
+    private boolean isGeofenceEnable;
+    private GeoFencing geofencing;
 
     /**
      * Called when the activity is starting
@@ -78,15 +84,28 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         // Set up the recycler view
-        mRecyclerView = (RecyclerView) findViewById(R.id.places_list_recycler_view);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.places_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new PlaceListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
         //Set up Geo-fences
         Switch onOffSwitch = (Switch) findViewById(R.id.enable_switch);
-        prefs = getSharedPreferences("ksdss", MODE_PRIVATE);
-        isGeofenceEnable = .
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        isGeofenceEnable = prefs.getBoolean(PREF_GEO_FENCE_ENABLED, false);
+        onOffSwitch.setChecked(isGeofenceEnable);
+        onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                isGeofenceEnable = isChecked;
+                prefs.edit().putBoolean(PREF_GEO_FENCE_ENABLED, isChecked).apply();
+
+                if (isChecked)
+                    geofencing.registerGeofences();
+                else
+                    geofencing.unregisterGeofences();
+            }
+        });
 
 
         // Build up the LocationServices API client
@@ -100,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements
                 .enableAutoManage(this, this)
                 .build();
 
+        geofencing = new GeoFencing(this, mClient);
     }
 
     /***

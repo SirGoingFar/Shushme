@@ -63,7 +63,7 @@ public class GeoFencing implements ResultCallback<Status> {
                 .build();
     }
 
-    private void registerGeofences() {
+    public void registerGeofences() {
 
         if (getmGoogleApiClient() == null || !getmGoogleApiClient().isConnected() || getGeofencePendingIntent() == null || getmGeoFenceList().isEmpty())
             return;
@@ -79,7 +79,7 @@ public class GeoFencing implements ResultCallback<Status> {
         }
     }
 
-    private void unregisterGeofences() {
+    public void unregisterGeofences() {
 
         if (getmGoogleApiClient() == null || !getmGoogleApiClient().isConnected() || getGeofencePendingIntent() == null)
             return;
